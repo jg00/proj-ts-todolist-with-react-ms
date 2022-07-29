@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import TodoList from "./components/TodoList";
+import NewTodo from "./components/NewTodo";
+import { Todo } from "./todo.model";
 
-function App() {
+const App: React.FC = () => {
+  const [toDos, setToDos] = useState<Todo[]>([]);
+
+  const todoAddHandler = (text: string) => {
+    setToDos((prevToDos) => {
+      return [...prevToDos, { id: Math.random().toString(), text }];
+    });
+  };
+
+  const todoDeleteHandler = (todoId: string) => {
+    setToDos((prevToDos) => {
+      return prevToDos.filter((item) => item.id !== todoId);
+    });
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NewTodo onAddTodo={todoAddHandler} />
+      <TodoList items={toDos} onDeleteTodo={todoDeleteHandler} />
     </div>
   );
-}
+};
 
 export default App;
+
+/* Notes:
+  We need to describe our props for each component
+  
+  const toDos = [{ id: "t1", text: "Finish the course!" }];
+
+  setToDos([...toDos, { id: Math.random().toString(), text }]); // works but toDos may not be the latest
+*/
